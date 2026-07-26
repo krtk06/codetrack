@@ -9,9 +9,9 @@ export default {
       'ts-jest',
       {
         useESM: true,
-        tsconfig: {
-          module: 'ESNext',
-          moduleResolution: 'Bundler'
+        tsconfig: 'tsconfig.test.json',
+        diagnostics: {
+          ignoreCodes: [151002]
         }
       }
     ]
@@ -20,5 +20,6 @@ export default {
     '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   collectCoverageFrom: ['src/**/*.ts', '!src/server.ts'],
-  coverageDirectory: 'coverage'
+  coverageDirectory: 'coverage',
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts']
 };
