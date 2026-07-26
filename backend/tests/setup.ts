@@ -4,6 +4,7 @@ import { prisma } from '../src/config/database.js';
 
 beforeEach(async () => {
   await prisma.$transaction([
+    prisma.dailySnapshot.deleteMany(),
     prisma.passwordResetToken.deleteMany(),
     prisma.emailVerificationToken.deleteMany(),
     prisma.refreshToken.deleteMany(),

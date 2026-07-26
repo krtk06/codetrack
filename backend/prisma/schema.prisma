@@ -26,6 +26,25 @@ model User {
   refreshTokens            RefreshToken[]
   emailVerificationTokens  EmailVerificationToken[]
   passwordResetTokens      PasswordResetToken[]
+  dailySnapshots           DailySnapshot[]
+}
+
+model DailySnapshot {
+  id             String   @id @default(uuid())
+  userId         String
+  totalSolved    Int
+  easySolved     Int
+  mediumSolved   Int
+  hardSolved     Int
+  acceptanceRate Float
+  contestRating  Float?
+  globalRanking  Int?
+  snapshotDate   DateTime @default(now())
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([snapshotDate])
 }
 
 model RefreshToken {
