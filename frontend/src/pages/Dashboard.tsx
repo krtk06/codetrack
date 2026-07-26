@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import LeetCodeStatsCard from '../features/leetcode/LeetCodeStatsCard';
+import { useDashboard } from '../features/dashboard/useDashboard';
 import { getCurrentUser } from '../features/users/usersApi';
 import type { ProfileUser } from '../features/users/usersSchemas';
+import WelcomeCard from '../components/dashboard/WelcomeCard';
+import StatCard from '../components/dashboard/StatCard';
 
 export default function Dashboard() {
+  const { data: dashboard, isLoading: dashboardLoading, error: dashboardError } = useDashboard();
   const [user, setUser] = useState<ProfileUser | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -16,8 +19,6 @@ export default function Dashboard() {
         if (!cancelled) setUser(user);
       } catch {
         toast.error('Failed to load profile');
-      } finally {
-        if (!cancelled) setLoading(false);
       }
     }
     load();
@@ -26,21 +27,54 @@ export default function Dashboard() {
     };
   }, []);
 
-  if (loading) {
+  if (dashboardError) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border)] border-t-[var(--primary)]" />
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 text-[var(--destructive)]">
+        Failed to load dashboard.
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-[var(--foreground)]">
-          Welcome back, {user?.name ?? 'Coder'}
-        </h1>
-        <p className="text-[var(--muted-foreground)]">Here is your coding progress overview.</p>
+      <WelcomeCard
+        name={dashboard?.user.name ?? 'Coder'}
+        goal={dashboard?.user.goal ?? 'Set a goal'}
+        progress={dashboard?.user.progress ?? '0 / 0'}
+        isLoading={dashboardLoading}
+      />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard
+          label="Problems Solved"
+          value={dashboard?.stats.totalProblemsSolved ?? null}
+          isLoading={dashboardLoading}
+        />
+        <StatCard
+          label="Current Streak"
+          value={dashboard?.stats.currentStreak ?? null}
+          isLoading={dashboardLoading}
+        />
+        <StatCard
+          label="Longest Streak"
+          value={dashboard?.stats.longestStreak ?? null}
+          isLoading={dashboardLoading}
+        />
+        <StatCard
+          label="Contest Rating"
+          value={dashboard?.stats.contestRating ?? null}
+          isLoading={dashboardLoading}
+        />
+        <StatCard
+          label="Monthly Growth"
+          value={dashboard?.stats.monthlyGrowth ?? null}
+          isLoading={dashboardLoading}
+        />
+        <StatCard
+          label="Applications Submitted"
+          value={dashboard?.stats.applicationsSubmitted ?? null}
+          isLoading={dashboardLoading}
+        />
       </div>
 
       <LeetCodeStatsCard username={user?.leetcodeUsername ?? undefined} />

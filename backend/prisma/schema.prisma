@@ -28,6 +28,7 @@ model User {
   passwordResetTokens      PasswordResetToken[]
   dailySnapshots           DailySnapshot[]
   problemStats             ProblemStats?
+  goal                     Goal?
 }
 
 model ProblemStats {
@@ -42,6 +43,17 @@ model ProblemStats {
   globalRanking  Int?
   lastUpdated    DateTime @updatedAt
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Goal {
+  id      String @id @default(uuid())
+  userId  String @unique
+  title   String
+  target  Int
+  current Int    @default(0)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
