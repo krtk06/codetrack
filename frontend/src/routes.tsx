@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
+import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
   <ProtectedRoute>
@@ -29,6 +30,6 @@ export const router = createBrowserRouter([
   { path: '/company-prep', element: protectedElement(<div className="text-xl">Company prep coming soon</div>) },
   { path: '/ai-coach', element: protectedElement(<div className="text-xl">AI coach coming soon</div>) },
   { path: '/profile', element: protectedElement(<div className="text-xl">Profile coming soon</div>) },
-  { path: '/settings', element: protectedElement(<div className="text-xl">Settings coming soon</div>) },
+  { path: '/settings', element: protectedElement(<Settings />) },
   { path: '/admin', element: protectedElement(<div className="text-xl">Admin coming soon</div>) }
 ]);

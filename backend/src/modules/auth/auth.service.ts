@@ -44,6 +44,13 @@ function toUserResponse(user: {
   email: string;
   name: string;
   role: string;
+  college: string | null;
+  graduationYear: number | null;
+  targetCompany: string | null;
+  targetRole: string | null;
+  leetcodeUsername: string | null;
+  githubUsername: string | null;
+  isEmailVerified: boolean;
   createdAt: Date;
 }): UserResponse {
   return {
@@ -51,6 +58,13 @@ function toUserResponse(user: {
     email: user.email,
     name: user.name,
     role: user.role,
+    college: user.college,
+    graduationYear: user.graduationYear,
+    targetCompany: user.targetCompany,
+    targetRole: user.targetRole,
+    leetcodeUsername: user.leetcodeUsername,
+    githubUsername: user.githubUsername,
+    isEmailVerified: user.isEmailVerified,
     createdAt: user.createdAt
   };
 }

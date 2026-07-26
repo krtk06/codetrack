@@ -10,6 +10,13 @@ export interface UserResponse {
   email: string;
   name: string;
   role: string;
+  college?: string | null;
+  graduationYear?: number | null;
+  targetCompany?: string | null;
+  targetRole?: string | null;
+  leetcodeUsername?: string | null;
+  githubUsername?: string | null;
+  isEmailVerified: boolean;
   createdAt: Date;
 }
 

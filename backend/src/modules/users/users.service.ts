@@ -12,12 +12,32 @@ export async function comparePassword(password: string, hash: string): Promise<b
   return bcrypt.compare(password, hash);
 }
 
-function toUserResponse(user: { id: string; email: string; name: string; role: string; createdAt: Date }): UserResponse {
+export function toUserResponse(user: {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  college: string | null;
+  graduationYear: number | null;
+  targetCompany: string | null;
+  targetRole: string | null;
+  leetcodeUsername: string | null;
+  githubUsername: string | null;
+  isEmailVerified: boolean;
+  createdAt: Date;
+}): UserResponse {
   return {
     id: user.id,
     email: user.email,
     name: user.name,
     role: user.role,
+    college: user.college,
+    graduationYear: user.graduationYear,
+    targetCompany: user.targetCompany,
+    targetRole: user.targetRole,
+    leetcodeUsername: user.leetcodeUsername,
+    githubUsername: user.githubUsername,
+    isEmailVerified: user.isEmailVerified,
     createdAt: user.createdAt
   };
 }
