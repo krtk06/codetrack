@@ -27,6 +27,23 @@ model User {
   emailVerificationTokens  EmailVerificationToken[]
   passwordResetTokens      PasswordResetToken[]
   dailySnapshots           DailySnapshot[]
+  problemStats             ProblemStats?
+}
+
+model ProblemStats {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  totalSolved    Int
+  easySolved     Int
+  mediumSolved   Int
+  hardSolved     Int
+  acceptanceRate Float
+  contestRating  Float?
+  globalRanking  Int?
+  lastUpdated    DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model DailySnapshot {

@@ -1,6 +1,8 @@
+import request from 'supertest';
 import nock from 'nock';
+import { app } from '../../app.js';
 import { prisma } from '../../config/database.js';
-import { fetchLeetCodeStats, createSnapshot } from './leetcode.service.js';
+import { fetchLeetCodeStats, createSnapshot, upsertProblemStats, getStatsByUsername } from './leetcode.service.js';
 
 const LEETCODE_GRAPHQL_URL = 'https://leetcode.com';
 
@@ -33,14 +35,22 @@ function buildGraphQLResponse(stats: {
   };
 }
 
+const sampleStats = {
+  totalSolved: 370,
+  easySolved: 120,
+  mediumSolved: 200,
+  hardSolved: 50,
+  acceptanceRate: 0.7,
+  contestRating: 1850,
+  globalRanking: 12345
+};
+
 describe('LeetCode client', () => {
   afterAll(async () => {
     await prisma.$disconnect();
   });
 
   beforeEach(async () => {
-    await prisma.dailySnapshot.deleteMany();
-    await prisma.user.deleteMany();
     nock.cleanAll();
   });
 
@@ -89,6 +99,16 @@ describe('LeetCode client', () => {
 
     await expect(fetchLeetCodeStats('unknown')).rejects.toThrow('User not found');
   });
+});
+
+describe('LeetCode service', () => {
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  beforeEach(async () => {
+    nock.cleanAll();
+  });
 
   it('creates a daily snapshot from stats', async () => {
     const user = await prisma.user.create({
@@ -99,18 +119,81 @@ describe('LeetCode client', () => {
       }
     });
 
-    const snapshot = await createSnapshot(user.id, {
-      totalSolved: 100,
-      easySolved: 30,
-      mediumSolved: 50,
-      hardSolved: 20,
-      acceptanceRate: 0.45,
-      contestRating: 1500,
-      globalRanking: 50000
-    });
+    const snapshot = await createSnapshot(user.id, sampleStats);
 
     expect(snapshot.userId).toBe(user.id);
-    expect(snapshot.totalSolved).toBe(100);
-    expect(snapshot.acceptanceRate).toBe(0.45);
+    expect(snapshot.totalSolved).toBe(370);
+    expect(snapshot.acceptanceRate).toBe(0.7);
+  });
+
+  it('upserts problem stats for a user', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'upsert@example.com', password: 'hash', name: 'Upsert User', leetcodeUsername: 'upsert_lc' }
+    });
+
+    await upsertProblemStats(user.id, sampleStats);
+    const first = await getStatsByUsername('upsert_lc');
+    expect(first).toMatchObject({ totalSolved: 370, isStale: false });
+
+    await upsertProblemStats(user.id, { ...sampleStats, totalSolved: 400 });
+    const second = await getStatsByUsername('upsert_lc');
+    expect(second?.totalSolved).toBe(400);
+  });
+});
+
+describe('LeetCode API', () => {
+  const credentials = { email: 'stats@example.com', password: 'secret123', name: 'Stats User' };
+  let accessToken: string;
+  let userId: string;
+
+  beforeEach(async () => {
+    const register = await request(app).post('/api/auth/register').send(credentials);
+    accessToken = register.body.accessToken;
+    userId = register.body.user.id;
+  });
+
+  it('GET /api/leetcode/:username/stats returns problem stats with stale flag', async () => {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { leetcodeUsername: 'stats_lc' }
+    });
+    await upsertProblemStats(userId, sampleStats);
+
+    const res = await request(app)
+      .get('/api/leetcode/stats_lc/stats')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.stats.totalSolved).toBe(370);
+    expect(res.body.stats.isStale).toBe(false);
+    expect(res.body.stats.lastUpdated).toBeDefined();
+  });
+
+  it('GET /api/leetcode/:username/stats returns 404 when stats are missing', async () => {
+    const res = await request(app)
+      .get('/api/leetcode/missing_lc/stats')
+      .set('Authorization', `Bearer ${accessToken}`);
+    expect(res.status).toBe(404);
+  });
+
+  it('POST /api/leetcode/:username/sync fetches and stores stats', async () => {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { leetcodeUsername: 'sync_lc' }
+    });
+
+    nock(LEETCODE_GRAPHQL_URL)
+      .post('/graphql')
+      .reply(200, buildGraphQLResponse({ easy: 5, medium: 10, hard: 2 }));
+
+    const res = await request(app)
+      .post('/api/leetcode/sync_lc/sync')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.stats.totalSolved).toBe(17);
+
+    const stored = await getStatsByUsername('sync_lc');
+    expect(stored?.totalSolved).toBe(17);
   });
 });
