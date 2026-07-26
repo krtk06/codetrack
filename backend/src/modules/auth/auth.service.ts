@@ -4,7 +4,10 @@ import { findUserByEmail, findUserById } from '../users/users.service.js';
 import { prisma } from '../../config/database.js';
 import { signAccessToken } from '../../common/jwt.js';
 import { badRequest, conflict, unauthorized } from '../../common/errors.js';
-import { sendEmail } from '../email/email.service.js';
+import {
+  sendVerificationEmail,
+  sendPasswordResetEmail
+} from '../email/email.templates.js';
 import type { UserResponse } from '../users/users.types.js';
 
 export const SALT_ROUNDS = 12;
@@ -50,26 +53,6 @@ function toUserResponse(user: {
     role: user.role,
     createdAt: user.createdAt
   };
-}
-
-async function sendVerificationEmail(email: string, token: string): Promise<void> {
-  const verificationUrl = `${process.env.FRONTEND_URL ?? 'http://localhost:5173'}/verify-email?token=${token}`;
-  await sendEmail({
-    to: email,
-    subject: 'Verify your CodeTrack Pro email',
-    html: `<p>Click <a href="${verificationUrl}">here</a> to verify your email.</p>`,
-    text: `Verify your email: ${verificationUrl}`
-  });
-}
-
-async function sendPasswordResetEmail(email: string, token: string): Promise<void> {
-  const resetUrl = `${process.env.FRONTEND_URL ?? 'http://localhost:5173'}/reset-password?token=${token}`;
-  await sendEmail({
-    to: email,
-    subject: 'Reset your CodeTrack Pro password',
-    html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
-    text: `Reset your password: ${resetUrl}`
-  });
 }
 
 interface RegisterInput {

@@ -1,3 +1,5 @@
+import { Resend } from 'resend';
+
 export interface EmailMessage {
   to: string;
   subject: string;
@@ -5,10 +7,30 @@ export interface EmailMessage {
   text?: string;
 }
 
+export function getDefaultFromEmail(): string {
+  return process.env.RESEND_FROM_EMAIL ?? 'CodeTrack Pro <noreply@codetrack.dev>';
+}
+
 export async function sendEmail(message: EmailMessage): Promise<void> {
   if (process.env.NODE_ENV === 'production' && process.env.RESEND_API_KEY) {
-    // Resend integration will be wired in Task 0.6
-    throw new Error('Production email delivery is not configured yet');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const result = await resend.emails.send({
+      from: getDefaultFromEmail(),
+      to: message.to,
+      subject: message.subject,
+      html: message.html,
+      text: message.text
+    });
+
+    if (result.error) {
+      throw new Error(`Failed to send email: ${result.error.message}`);
+    }
+
+    return;
+  }
+
+  if (process.env.NODE_ENV === 'test') {
+    return;
   }
 
   // eslint-disable-next-line no-console
