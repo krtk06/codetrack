@@ -13,6 +13,7 @@ import Contests from './pages/Contests';
 import ContestAnalysis from './pages/ContestAnalysis';
 import Interviews from './pages/Interviews';
 import MockInterviews from './pages/MockInterviews';
+import Applications from './pages/Applications';
 import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
   { path: '/interviews', element: protectedElement(<Interviews />) },
   { path: '/mock-interviews', element: protectedElement(<MockInterviews />) },
   { path: '/resume-tracker', element: protectedElement(<div className="text-xl">Resume tracker coming soon</div>) },
-  { path: '/applications', element: protectedElement(<div className="text-xl">Applications coming soon</div>) },
+  { path: '/applications', element: protectedElement(<Applications />) },
   { path: '/company-prep', element: protectedElement(<div className="text-xl">Company prep coming soon</div>) },
   { path: '/ai-coach', element: protectedElement(<div className="text-xl">AI coach coming soon</div>) },
   { path: '/profile', element: protectedElement(<div className="text-xl">Profile coming soon</div>) },
