@@ -22,3 +22,12 @@ export interface CreateContestInput {
   ratingBefore?: number | null;
   ratingAfter?: number | null;
 }
+
+export interface ContestAnalysis {
+  bestRank: number;
+  worstRank: number;
+  averageRank: number;
+  ratingGrowth: number;
+  participationFrequency: number;
+  ratingTrend: number[];
+}

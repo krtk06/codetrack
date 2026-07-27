@@ -176,3 +176,68 @@ export async function importCodechefCsv(
 
   return contests.map(toContestResponse);
 }
+
+export interface ContestAnalysis {
+  bestRank: number;
+  worstRank: number;
+  averageRank: number;
+  ratingGrowth: number;
+  participationFrequency: number;
+  ratingTrend: number[];
+}
+
+export async function getContestAnalysis(userId: string): Promise<ContestAnalysis> {
+  const contests = await prisma.contest.findMany({
+    where: { userId },
+    orderBy: { date: 'asc' }
+  });
+
+  if (contests.length === 0) {
+    return {
+      bestRank: 0,
+      worstRank: 0,
+      averageRank: 0,
+      ratingGrowth: 0,
+      participationFrequency: 0,
+      ratingTrend: []
+    };
+  }
+
+  const ranks = contests.map((c) => c.rank).filter((rank) => rank > 0);
+  const bestRank = ranks.length > 0 ? Math.min(...ranks) : 0;
+  const worstRank = ranks.length > 0 ? Math.max(...ranks) : 0;
+  const averageRank =
+    ranks.length > 0
+      ? Math.round(ranks.reduce((sum, rank) => sum + rank, 0) / ranks.length)
+      : 0;
+
+  const ratings = contests
+    .filter((c) => c.ratingAfter !== null && c.ratingAfter !== undefined)
+    .map((c) => c.ratingAfter as number);
+
+  const ratingTrend = ratings;
+  let ratingGrowth = 0;
+  if (contests.length >= 2) {
+    const first = contests[0];
+    const last = contests[contests.length - 1];
+    const startRating = first.ratingBefore ?? first.ratingAfter;
+    const endRating = last.ratingAfter ?? last.ratingBefore;
+    if (startRating !== null && startRating !== undefined && endRating !== null && endRating !== undefined) {
+      ratingGrowth = endRating - startRating;
+    }
+  }
+
+  const firstDate = new Date(contests[0].date);
+  const lastDate = new Date(contests[contests.length - 1].date);
+  const daysSpan = Math.max(1, Math.round((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)));
+  const participationFrequency = Math.round((contests.length / daysSpan) * 30 * 100) / 100;
+
+  return {
+    bestRank,
+    worstRank,
+    averageRank,
+    ratingGrowth,
+    participationFrequency,
+    ratingTrend
+  };
+}

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
 import Contests from './Contests';
 import * as contestsApi from '../features/contests/contestsApi';
 import type { Contest } from '../features/contests/contestsTypes';
@@ -36,7 +37,11 @@ function Wrapper({ children }: { children: React.ReactNode }) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } }
   });
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <MemoryRouter>
+      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    </MemoryRouter>
+  );
 }
 
 describe('Contests page', () => {

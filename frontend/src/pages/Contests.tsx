@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   useContests,
@@ -88,9 +89,17 @@ export default function Contests() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-[var(--foreground)]">Contests</h1>
-        <p className="text-[var(--muted-foreground)]">Track your contest performance across platforms.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-[var(--foreground)]">Contests</h1>
+          <p className="text-[var(--muted-foreground)]">Track your contest performance across platforms.</p>
+        </div>
+        <Link
+          to="/contests/analysis"
+          className="rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--muted)]"
+        >
+          View Analysis
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

@@ -1,11 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getContests, createContest, importCodeforces, importCodechefCsv } from './contestsApi';
+import { getContests, getContestAnalysis, createContest, importCodeforces, importCodechefCsv } from './contestsApi';
 import type { CreateContestInput } from './contestsTypes';
 
 export function useContests() {
   return useQuery({
     queryKey: ['contests'],
     queryFn: getContests,
+    staleTime: 5 * 60 * 1000
+  });
+}
+
+export function useContestAnalysis() {
+  return useQuery({
+    queryKey: ['contests', 'analysis'],
+    queryFn: getContestAnalysis,
     staleTime: 5 * 60 * 1000
   });
 }

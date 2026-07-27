@@ -285,4 +285,83 @@ describe('Contests API', () => {
       expect(res.status).toBe(400);
     });
   });
+
+  describe('GET /api/contests/analysis', () => {
+    it('returns 401 without authentication', async () => {
+      const res = await request(app).get('/api/contests/analysis');
+      expect(res.status).toBe(401);
+    });
+
+    it('returns zeros for a user with no contests', async () => {
+      const accessToken = await loginUser('wade@example.com', 'Wade');
+      const res = await request(app)
+        .get('/api/contests/analysis')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        bestRank: 0,
+        worstRank: 0,
+        averageRank: 0,
+        ratingGrowth: 0,
+        participationFrequency: 0,
+        ratingTrend: []
+      });
+    });
+
+    it('computes rank metrics and rating trend from contests', async () => {
+      const accessToken = await loginUser('xena@example.com', 'Xena');
+      const contests = [
+        {
+          platform: 'CODEFORCES',
+          externalContestId: '2000',
+          contestName: 'CF Round 1',
+          date: '2026-01-01T15:00:00.000Z',
+          rank: 50,
+          solved: 4,
+          ratingBefore: 1500,
+          ratingAfter: 1520
+        },
+        {
+          platform: 'CODEFORCES',
+          externalContestId: '2001',
+          contestName: 'CF Round 2',
+          date: '2026-02-01T15:00:00.000Z',
+          rank: 20,
+          solved: 5,
+          ratingBefore: 1520,
+          ratingAfter: 1600
+        },
+        {
+          platform: 'CODEFORCES',
+          externalContestId: '2002',
+          contestName: 'CF Round 3',
+          date: '2026-03-01T15:00:00.000Z',
+          rank: 100,
+          solved: 3,
+          ratingBefore: 1600,
+          ratingAfter: 1580
+        }
+      ];
+
+      for (const c of contests) {
+        await request(app)
+          .post('/api/contests')
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send(c);
+      }
+
+      const res = await request(app)
+        .get('/api/contests/analysis')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.bestRank).toBe(20);
+      expect(res.body.worstRank).toBe(100);
+      expect(res.body.averageRank).toBe(57);
+      expect(res.body.ratingGrowth).toBe(80);
+      expect(res.body.ratingTrend).toEqual([1520, 1600, 1580]);
+      expect(res.body.participationFrequency).toBeGreaterThan(0);
+    });
+  });
 });

@@ -1,9 +1,14 @@
 import { api } from '../../lib/api';
-import type { Contest, CreateContestInput } from './contestsTypes';
+import type { Contest, ContestAnalysis, CreateContestInput } from './contestsTypes';
 
 export async function getContests(): Promise<Contest[]> {
   const response = await api.get<{ contests: Contest[] }>('/contests');
   return response.data.contests;
+}
+
+export async function getContestAnalysis(): Promise<ContestAnalysis> {
+  const response = await api.get<ContestAnalysis>('/contests/analysis');
+  return response.data;
 }
 
 export async function createContest(input: CreateContestInput): Promise<Contest> {

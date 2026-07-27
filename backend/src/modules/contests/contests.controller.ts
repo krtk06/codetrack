@@ -4,6 +4,7 @@ import {
   createContest,
   createContests,
   getContests,
+  getContestAnalysis,
   importCodechefCsv,
   importCodeforcesContests
 } from './contests.service.js';
@@ -110,6 +111,19 @@ export async function getContestsController(
   try {
     const contests = await getContests(req.user!.userId);
     res.json({ contests });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getContestAnalysisController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const analysis = await getContestAnalysis(req.user!.userId);
+    res.json(analysis);
   } catch (error) {
     next(error);
   }
