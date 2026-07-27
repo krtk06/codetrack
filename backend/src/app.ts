@@ -10,6 +10,7 @@ import analyticsRoutes from './modules/analytics/analytics.routes.js';
 import topicsRoutes from './modules/topics/topics.routes.js';
 import heatmapRoutes from './modules/heatmap/heatmap.routes.js';
 import contestsRoutes from './modules/contests/contests.routes.js';
+import interviewsRoutes from './modules/interviews/interviews.routes.js';
 
 export const app = express();
 
@@ -30,5 +31,6 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/topics', topicsRoutes);
 app.use('/api/heatmap', heatmapRoutes);
 app.use('/api/contests', contestsRoutes);
+app.use('/api/interviews', interviewsRoutes);
 
 app.use(errorHandler);

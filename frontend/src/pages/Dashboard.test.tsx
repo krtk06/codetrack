@@ -17,6 +17,10 @@ vi.mock('../features/dashboard/dashboardApi', () => ({
   getDashboard: vi.fn()
 }));
 
+vi.mock('../features/interviews/interviewsApi', () => ({
+  getUpcomingInterviews: vi.fn().mockResolvedValue([])
+}));
+
 const mockUser = {
   id: 'u1',
   email: 'alice@example.com',

@@ -6,6 +6,7 @@ import { getCurrentUser } from '../features/users/usersApi';
 import type { ProfileUser } from '../features/users/usersSchemas';
 import WelcomeCard from '../components/dashboard/WelcomeCard';
 import StatCard from '../components/dashboard/StatCard';
+import UpcomingInterviews from '../components/dashboard/UpcomingInterviews';
 import WeeklyGrowthChart from '../components/charts/WeeklyGrowthChart';
 import MonthlyGrowthChart from '../components/charts/MonthlyGrowthChart';
 
@@ -83,6 +84,8 @@ export default function Dashboard() {
         <WeeklyGrowthChart />
         <MonthlyGrowthChart />
       </div>
+
+      <UpcomingInterviews />
 
       <LeetCodeStatsCard username={user?.leetcodeUsername ?? undefined} />
     </div>

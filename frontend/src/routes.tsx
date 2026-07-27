@@ -11,6 +11,7 @@ import TopicAnalysis from './pages/TopicAnalysis';
 import Heatmap from './pages/Heatmap';
 import Contests from './pages/Contests';
 import ContestAnalysis from './pages/ContestAnalysis';
+import Interviews from './pages/Interviews';
 import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
   { path: '/contest-analysis', element: protectedElement(<Contests />) },
   { path: '/contests/analysis', element: protectedElement(<ContestAnalysis />) },
   { path: '/heatmap', element: protectedElement(<Heatmap />) },
-  { path: '/interviews', element: protectedElement(<div className="text-xl">Interviews coming soon</div>) },
+  { path: '/interviews', element: protectedElement(<Interviews />) },
   { path: '/resume-tracker', element: protectedElement(<div className="text-xl">Resume tracker coming soon</div>) },
   { path: '/applications', element: protectedElement(<div className="text-xl">Applications coming soon</div>) },
   { path: '/company-prep', element: protectedElement(<div className="text-xl">Company prep coming soon</div>) },

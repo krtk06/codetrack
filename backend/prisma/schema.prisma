@@ -31,6 +31,7 @@ model User {
   goal                     Goal?
   topicPerformances        TopicPerformance[]
   contests                 Contest[]
+  interviews               Interview[]
 }
 
 model ProblemStats {
@@ -125,6 +126,30 @@ enum Platform {
   LEETCODE
   CODEFORCES
   CODECHEF
+}
+
+model Interview {
+  id          String          @id @default(uuid())
+  userId      String
+  company     String
+  round       String
+  date        DateTime
+  time        String
+  location    String?
+  meetingLink String?
+  status      InterviewStatus @default(SCHEDULED)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId, status])
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
 }
 
 model RefreshToken {
