@@ -29,6 +29,7 @@ model User {
   dailySnapshots           DailySnapshot[]
   problemStats             ProblemStats?
   goal                     Goal?
+  topicPerformances        TopicPerformance[]
 }
 
 model ProblemStats {
@@ -56,6 +57,30 @@ model Goal {
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Topic {
+  id           String             @id @default(uuid())
+  name         String             @unique
+  order        Int                @default(0)
+  performances TopicPerformance[]
+
+  @@index([order])
+}
+
+model TopicPerformance {
+  id          String  @id @default(uuid())
+  userId      String
+  topicId     String
+  solved      Int     @default(0)
+  attempted   Int     @default(0)
+  successRate Float   @default(0)
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic       Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, topicId])
+  @@index([userId])
+  @@index([topicId])
 }
 
 model DailySnapshot {

@@ -4,6 +4,9 @@
   "private": true,
   "description": "CodeTrack Pro Express backend",
   "type": "module",
+  "prisma": {
+    "seed": "tsx prisma/seed/topics.seed.ts"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc && prisma generate",
