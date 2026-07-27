@@ -7,6 +7,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
+import TopicAnalysis from './pages/TopicAnalysis';
 import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
   { path: '/reset-password', element: <ResetPassword /> },
   { path: '/dashboard', element: protectedElement(<Dashboard />) },
   { path: '/analytics', element: protectedElement(<Analytics />) },
+  { path: '/topics', element: protectedElement(<TopicAnalysis />) },
   { path: '/contest-analysis', element: protectedElement(<div className="text-xl">Contest analysis coming soon</div>) },
   { path: '/heatmap', element: protectedElement(<div className="text-xl">Heatmap coming soon</div>) },
   { path: '/interviews', element: protectedElement(<div className="text-xl">Interviews coming soon</div>) },

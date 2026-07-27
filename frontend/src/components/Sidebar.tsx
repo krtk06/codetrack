@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   BarChart3,
+  PieChart,
   Trophy,
   Flame,
   Mic2,
@@ -23,6 +24,7 @@ interface SidebarProps {
 const links = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { to: '/topics', label: 'Topics', icon: PieChart },
   { to: '/contest-analysis', label: 'Contests', icon: Trophy },
   { to: '/heatmap', label: 'Heatmap', icon: Flame },
   { to: '/interviews', label: 'Interviews', icon: Mic2 },
