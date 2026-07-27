@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import TopicAnalysis from './pages/TopicAnalysis';
 import Heatmap from './pages/Heatmap';
+import Contests from './pages/Contests';
 import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
@@ -26,7 +27,7 @@ export const router = createBrowserRouter([
   { path: '/dashboard', element: protectedElement(<Dashboard />) },
   { path: '/analytics', element: protectedElement(<Analytics />) },
   { path: '/topics', element: protectedElement(<TopicAnalysis />) },
-  { path: '/contest-analysis', element: protectedElement(<div className="text-xl">Contest analysis coming soon</div>) },
+  { path: '/contest-analysis', element: protectedElement(<Contests />) },
   { path: '/heatmap', element: protectedElement(<Heatmap />) },
   { path: '/interviews', element: protectedElement(<div className="text-xl">Interviews coming soon</div>) },
   { path: '/resume-tracker', element: protectedElement(<div className="text-xl">Resume tracker coming soon</div>) },

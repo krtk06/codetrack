@@ -4,6 +4,7 @@ import {
   fetchCodeforcesRatingHistory,
   type CodeforcesRatingChange
 } from './codeforces.client.js';
+import { parseCodechefCsv } from './codechef.parser.js';
 import type { ContestRecord, ContestResponse, CreateContestInput } from './contests.types.js';
 
 function toContestResponse(contest: {
@@ -114,5 +115,64 @@ export async function getContests(userId: string): Promise<ContestResponse[]> {
     where: { userId },
     orderBy: { date: 'desc' }
   });
+  return contests.map(toContestResponse);
+}
+
+export async function createContests(
+  userId: string,
+  records: CreateContestInput[]
+): Promise<ContestResponse[]> {
+  if (records.length === 0) {
+    return [];
+  }
+
+  const contests = await prisma.$transaction(
+    records.map((record) =>
+      prisma.contest.create({
+        data: {
+          userId,
+          platform: record.platform,
+          externalContestId: record.externalContestId ?? null,
+          contestName: record.contestName,
+          date: new Date(record.date),
+          rank: record.rank,
+          solved: record.solved ?? 0,
+          ratingBefore: record.ratingBefore ?? null,
+          ratingAfter: record.ratingAfter ?? null
+        }
+      })
+    )
+  );
+
+  return contests.map(toContestResponse);
+}
+
+export async function importCodechefCsv(
+  userId: string,
+  csv: string
+): Promise<ContestResponse[]> {
+  const records: ContestRecord[] = parseCodechefCsv(csv);
+  if (records.length === 0) {
+    return [];
+  }
+
+  const contests = await prisma.$transaction(
+    records.map((record) =>
+      prisma.contest.create({
+        data: {
+          userId,
+          platform: record.platform,
+          externalContestId: record.externalContestId,
+          contestName: record.contestName,
+          date: record.date,
+          rank: record.rank,
+          solved: record.solved,
+          ratingBefore: record.ratingBefore,
+          ratingAfter: record.ratingAfter
+        }
+      })
+    )
+  );
+
   return contests.map(toContestResponse);
 }

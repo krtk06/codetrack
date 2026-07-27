@@ -1,6 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { createContest, getContests, importCodeforcesContests } from './contests.service.js';
+import {
+  createContest,
+  createContests,
+  getContests,
+  importCodechefCsv,
+  importCodeforcesContests
+} from './contests.service.js';
 import { badRequest } from '../../common/errors.js';
 
 const importSchema = z.object({
@@ -16,6 +22,10 @@ const createSchema = z.object({
   solved: z.number().int().nonnegative().optional(),
   ratingBefore: z.number().int().nullable().optional(),
   ratingAfter: z.number().int().nullable().optional()
+});
+
+const csvImportSchema = z.object({
+  csv: z.string().min(1)
 });
 
 export async function importCodeforcesController(
@@ -41,12 +51,52 @@ export async function createContestController(
   next: NextFunction
 ) {
   try {
+    if (Array.isArray(req.body)) {
+      const parsed = z.array(createSchema).safeParse(req.body);
+      if (!parsed.success) {
+        return next(badRequest('Invalid contest payload'));
+      }
+      const contests = await createContests(req.user!.userId, parsed.data);
+      res.status(201).json({ contests });
+      return;
+    }
+
     const parsed = createSchema.safeParse(req.body);
     if (!parsed.success) {
       return next(badRequest('Invalid contest payload'));
     }
     const contest = await createContest(req.user!.userId, parsed.data);
     res.status(201).json({ contest });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function importCodechefController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    let csv: string | undefined;
+    const contentType = req.headers['content-type'] ?? '';
+
+    if (contentType.includes('text/csv')) {
+      csv = typeof req.body === 'string' ? req.body : undefined;
+    } else {
+      const parsed = csvImportSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return next(badRequest('CSV payload is required'));
+      }
+      csv = parsed.data.csv;
+    }
+
+    if (!csv) {
+      return next(badRequest('CSV payload is required'));
+    }
+
+    const contests = await importCodechefCsv(req.user!.userId, csv);
+    res.status(201).json({ contests });
   } catch (error) {
     next(error);
   }

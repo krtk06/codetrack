@@ -189,4 +189,100 @@ describe('Contests API', () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe('POST /api/contests (bulk)', () => {
+    it('creates multiple contests in a single request', async () => {
+      const accessToken = await loginUser('rachel@example.com', 'Rachel');
+      const res = await request(app)
+        .post('/api/contests')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send([
+          {
+            platform: 'LEETCODE',
+            contestName: 'Weekly Contest 360',
+            date: '2026-05-01T15:00:00.000Z',
+            rank: 100,
+            solved: 3
+          },
+          {
+            platform: 'LEETCODE',
+            contestName: 'Weekly Contest 361',
+            date: '2026-05-08T15:00:00.000Z',
+            rank: 80,
+            solved: 4
+          }
+        ]);
+
+      expect(res.status).toBe(201);
+      expect(res.body.contests).toHaveLength(2);
+    });
+  });
+
+  describe('POST /api/contests/import/codechef/csv', () => {
+    it('imports contests from a JSON CSV payload', async () => {
+      const accessToken = await loginUser('sam@example.com', 'Sam');
+      const csv = [
+        'contestName,date,rank,solved,ratingBefore,ratingAfter',
+        'Cook-Off 120,2026-06-01T15:00:00.000Z,42,3,1700,1720',
+        'Lunchtime 90,2026-06-08T15:00:00.000Z,15,4,1720,1745'
+      ].join('\n');
+
+      const res = await request(app)
+        .post('/api/contests/import/codechef/csv')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ csv });
+
+      expect(res.status).toBe(201);
+      expect(res.body.contests).toHaveLength(2);
+      expect(res.body.contests[0]).toMatchObject({
+        platform: 'CODECHEF',
+        contestName: 'Cook-Off 120',
+        rank: 42,
+        ratingBefore: 1700,
+        ratingAfter: 1720
+      });
+    });
+
+    it('imports contests from text/csv content type', async () => {
+      const accessToken = await loginUser('tina@example.com', 'Tina');
+      const csv = [
+        'contestName,date,rank,solved,ratingBefore,ratingAfter',
+        'Cook-Off 130,2026-06-15T15:00:00.000Z,10,4,1750,1770'
+      ].join('\n');
+
+      const res = await request(app)
+        .post('/api/contests/import/codechef/csv')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .set('Content-Type', 'text/csv')
+        .send(csv);
+
+      expect(res.status).toBe(201);
+      expect(res.body.contests).toHaveLength(1);
+    });
+
+    it('rejects an empty CSV', async () => {
+      const accessToken = await loginUser('umar@example.com', 'Umar');
+      const res = await request(app)
+        .post('/api/contests/import/codechef/csv')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ csv: '' });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('rejects rows with invalid data', async () => {
+      const accessToken = await loginUser('vera@example.com', 'Vera');
+      const csv = [
+        'contestName,date,rank,solved,ratingBefore,ratingAfter',
+        'Bad Contest,not-a-date,42,3,1700,1720'
+      ].join('\n');
+
+      const res = await request(app)
+        .post('/api/contests/import/codechef/csv')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ csv });
+
+      expect(res.status).toBe(400);
+    });
+  });
 });
