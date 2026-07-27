@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import * as usersApi from '../features/users/usersApi';
 import * as dashboardApi from '../features/dashboard/dashboardApi';
+import * as applicationsApi from '../features/applications/applicationsApi';
 
 vi.mock('../features/leetcode/LeetCodeStatsCard', () => ({
   default: () => <div data-testid="leetcode-card">LeetCode Stats</div>
@@ -19,6 +21,13 @@ vi.mock('../features/dashboard/dashboardApi', () => ({
 
 vi.mock('../features/interviews/interviewsApi', () => ({
   getUpcomingInterviews: vi.fn().mockResolvedValue([])
+}));
+
+vi.mock('../features/applications/applicationsApi', () => ({
+  getApplications: vi.fn().mockResolvedValue([]),
+  createApplication: vi.fn(),
+  updateApplication: vi.fn(),
+  deleteApplication: vi.fn()
 }));
 
 const mockUser = {
@@ -50,7 +59,11 @@ function Wrapper({ children }: { children: React.ReactNode }) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } }
   });
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <MemoryRouter>
+      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    </MemoryRouter>
+  );
 }
 
 describe('Dashboard page', () => {
@@ -80,5 +93,30 @@ describe('Dashboard page', () => {
     render(<Dashboard />, { wrapper: Wrapper });
 
     await waitFor(() => expect(screen.getByText(/Failed to load dashboard/i)).toBeInTheDocument());
+  });
+
+  it('renders recent applications and quick actions', async () => {
+    vi.mocked(usersApi.getCurrentUser).mockResolvedValue({ user: mockUser as any });
+    vi.mocked(dashboardApi.getDashboard).mockResolvedValue(mockDashboard);
+    vi.mocked(applicationsApi.getApplications).mockResolvedValue([
+      {
+        id: 'a1',
+        company: 'Acme',
+        role: 'SWE',
+        location: 'Remote',
+        appliedDate: '2026-01-10T00:00:00.000Z',
+        status: 'APPLIED',
+        notes: null,
+        createdAt: '2026-01-10T00:00:00.000Z',
+        updatedAt: '2026-01-10T00:00:00.000Z'
+      }
+    ]);
+
+    render(<Dashboard />, { wrapper: Wrapper });
+
+    await waitFor(() => expect(screen.getByText('Acme')).toBeInTheDocument());
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+    expect(screen.getByText('Schedule Interview')).toBeInTheDocument();
+    expect(screen.getByText('Add Application')).toBeInTheDocument();
   });
 });

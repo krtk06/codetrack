@@ -7,6 +7,8 @@ import type { ProfileUser } from '../features/users/usersSchemas';
 import WelcomeCard from '../components/dashboard/WelcomeCard';
 import StatCard from '../components/dashboard/StatCard';
 import UpcomingInterviews from '../components/dashboard/UpcomingInterviews';
+import RecentApplications from '../components/dashboard/RecentApplications';
+import QuickActions from '../components/dashboard/QuickActions';
 import WeeklyGrowthChart from '../components/charts/WeeklyGrowthChart';
 import MonthlyGrowthChart from '../components/charts/MonthlyGrowthChart';
 
@@ -86,6 +88,11 @@ export default function Dashboard() {
       </div>
 
       <UpcomingInterviews />
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <RecentApplications />
+        <QuickActions />
+      </div>
 
       <LeetCodeStatsCard username={user?.leetcodeUsername ?? undefined} />
     </div>
