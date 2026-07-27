@@ -30,6 +30,7 @@ model User {
   problemStats             ProblemStats?
   goal                     Goal?
   topicPerformances        TopicPerformance[]
+  contests                 Contest[]
 }
 
 model ProblemStats {
@@ -99,6 +100,31 @@ model DailySnapshot {
 
   @@index([userId])
   @@index([snapshotDate])
+}
+
+model Contest {
+  id              String     @id @default(uuid())
+  userId          String
+  platform        Platform
+  externalContestId String?
+  contestName     String
+  date            DateTime
+  rank            Int
+  solved          Int        @default(0)
+  ratingBefore    Int?
+  ratingAfter     Int?
+  createdAt       DateTime   @default(now())
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform, externalContestId])
+  @@index([userId, date])
+  @@index([userId, platform])
+}
+
+enum Platform {
+  LEETCODE
+  CODEFORCES
+  CODECHEF
 }
 
 model RefreshToken {
