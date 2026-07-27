@@ -8,6 +8,7 @@ import leetcodeRoutes from './modules/leetcode/leetcode.routes.js';
 import dashboardRoutes from './modules/dashboard/dashboard.routes.js';
 import analyticsRoutes from './modules/analytics/analytics.routes.js';
 import topicsRoutes from './modules/topics/topics.routes.js';
+import heatmapRoutes from './modules/heatmap/heatmap.routes.js';
 
 export const app = express();
 
@@ -25,5 +26,6 @@ app.use('/api/leetcode', leetcodeRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/topics', topicsRoutes);
+app.use('/api/heatmap', heatmapRoutes);
 
 app.use(errorHandler);

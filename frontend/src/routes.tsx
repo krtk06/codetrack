@@ -8,6 +8,7 @@ import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import TopicAnalysis from './pages/TopicAnalysis';
+import Heatmap from './pages/Heatmap';
 import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
@@ -26,7 +27,7 @@ export const router = createBrowserRouter([
   { path: '/analytics', element: protectedElement(<Analytics />) },
   { path: '/topics', element: protectedElement(<TopicAnalysis />) },
   { path: '/contest-analysis', element: protectedElement(<div className="text-xl">Contest analysis coming soon</div>) },
-  { path: '/heatmap', element: protectedElement(<div className="text-xl">Heatmap coming soon</div>) },
+  { path: '/heatmap', element: protectedElement(<Heatmap />) },
   { path: '/interviews', element: protectedElement(<div className="text-xl">Interviews coming soon</div>) },
   { path: '/resume-tracker', element: protectedElement(<div className="text-xl">Resume tracker coming soon</div>) },
   { path: '/applications', element: protectedElement(<div className="text-xl">Applications coming soon</div>) },
