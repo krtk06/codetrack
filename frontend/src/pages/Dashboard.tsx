@@ -6,6 +6,8 @@ import { getCurrentUser } from '../features/users/usersApi';
 import type { ProfileUser } from '../features/users/usersSchemas';
 import WelcomeCard from '../components/dashboard/WelcomeCard';
 import StatCard from '../components/dashboard/StatCard';
+import WeeklyGrowthChart from '../components/charts/WeeklyGrowthChart';
+import MonthlyGrowthChart from '../components/charts/MonthlyGrowthChart';
 
 export default function Dashboard() {
   const { data: dashboard, isLoading: dashboardLoading, error: dashboardError } = useDashboard();
@@ -75,6 +77,11 @@ export default function Dashboard() {
           value={dashboard?.stats.applicationsSubmitted ?? null}
           isLoading={dashboardLoading}
         />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <WeeklyGrowthChart />
+        <MonthlyGrowthChart />
       </div>
 
       <LeetCodeStatsCard username={user?.leetcodeUsername ?? undefined} />

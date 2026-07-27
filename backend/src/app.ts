@@ -6,6 +6,7 @@ import authRoutes from './modules/auth/auth.routes.js';
 import userRoutes from './modules/users/users.routes.js';
 import leetcodeRoutes from './modules/leetcode/leetcode.routes.js';
 import dashboardRoutes from './modules/dashboard/dashboard.routes.js';
+import analyticsRoutes from './modules/analytics/analytics.routes.js';
 
 export const app = express();
 
@@ -21,5 +22,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/leetcode', leetcodeRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.use(errorHandler);
