@@ -24,7 +24,8 @@ export function errorHandler(err: Error, _req: Request, res: Response, _next: Ne
     return;
   }
 
-  if (err.name === 'PayloadTooLargeError' || (err as Record<string, unknown>).type === 'entity.too.large') {
+  const payloadErr = err as Error & { type?: string };
+  if (err.name === 'PayloadTooLargeError' || payloadErr.type === 'entity.too.large') {
     res.status(413).json({
       error: {
         message: 'Uploaded file is too large (max 50 MB).',
