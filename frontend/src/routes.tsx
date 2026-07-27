@@ -15,6 +15,7 @@ import Interviews from './pages/Interviews';
 import MockInterviews from './pages/MockInterviews';
 import Applications from './pages/Applications';
 import ResumeTracker from './pages/ResumeTracker';
+import CompanyPrep from './pages/CompanyPrep';
 import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
   { path: '/mock-interviews', element: protectedElement(<MockInterviews />) },
   { path: '/resume-tracker', element: protectedElement(<ResumeTracker />) },
   { path: '/applications', element: protectedElement(<Applications />) },
-  { path: '/company-prep', element: protectedElement(<div className="text-xl">Company prep coming soon</div>) },
+  { path: '/company-prep', element: protectedElement(<CompanyPrep />) },
   { path: '/ai-coach', element: protectedElement(<div className="text-xl">AI coach coming soon</div>) },
   { path: '/profile', element: protectedElement(<div className="text-xl">Profile coming soon</div>) },
   { path: '/settings', element: protectedElement(<Settings />) },

@@ -15,6 +15,7 @@ import mockInterviewsRoutes from './modules/mock-interviews/mockInterviews.route
 import applicationsRoutes from './modules/applications/applications.routes.js';
 import recommendationsRoutes from './modules/recommendations/recommendations.routes.js';
 import resumesRoutes from './modules/resumes/resumes.routes.js';
+import companiesRoutes from './modules/companies/companies.routes.js';
 
 export const app = express();
 
@@ -40,5 +41,6 @@ app.use('/api/mock-interviews', mockInterviewsRoutes);
 app.use('/api/applications', applicationsRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
 app.use('/api/resumes', resumesRoutes);
+app.use('/api/companies', companiesRoutes);
 
 app.use(errorHandler);
