@@ -17,6 +17,7 @@ import Applications from './pages/Applications';
 import ResumeTracker from './pages/ResumeTracker';
 import CompanyPrep from './pages/CompanyPrep';
 import AICoach from './pages/AICoach';
+import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
 
 const protectedElement = (page: React.ReactNode) => (
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
   { path: '/applications', element: protectedElement(<Applications />) },
   { path: '/company-prep', element: protectedElement(<CompanyPrep />) },
   { path: '/ai-coach', element: protectedElement(<AICoach />) },
+  { path: '/notifications', element: protectedElement(<Notifications />) },
   { path: '/profile', element: protectedElement(<div className="text-xl">Profile coming soon</div>) },
   { path: '/settings', element: protectedElement(<Settings />) },
   { path: '/admin', element: protectedElement(<div className="text-xl">Admin coming soon</div>) }
