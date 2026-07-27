@@ -35,6 +35,7 @@ model User {
   mockInterviews            MockInterview[]
   applications              Application[]
   recommendation            Recommendation?
+  resumes                  Resume[]
 }
 
 model ProblemStats {
@@ -204,6 +205,19 @@ model Recommendation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Resume {
+  id                 String   @id @default(uuid())
+  userId             String
+  label              String
+  cloudinaryPublicId String
+  url                String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model RefreshToken {
