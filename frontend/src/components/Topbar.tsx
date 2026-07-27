@@ -2,6 +2,7 @@ import { Menu, Moon, Sun, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/hooks';
 import { logoutUser } from '../features/auth/authSlice';
+import NotificationBadge from './ui/NotificationBadge';
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -33,6 +34,7 @@ export default function Topbar({ onMenuClick, isDark, onToggleTheme }: TopbarPro
       </div>
 
       <div className="flex items-center gap-2">
+        <NotificationBadge />
         <button
           type="button"
           onClick={onToggleTheme}
