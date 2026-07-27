@@ -18,6 +18,7 @@ import resumesRoutes from './modules/resumes/resumes.routes.js';
 import companiesRoutes from './modules/companies/companies.routes.js';
 import aiCoachRoutes from './modules/ai-coach/aiCoach.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
+import adminRoutes from './modules/admin/admin.routes.js';
 
 export const app = express();
 
@@ -46,5 +47,6 @@ app.use('/api/resumes', resumesRoutes);
 app.use('/api/companies', companiesRoutes);
 app.use('/api/ai-coach', aiCoachRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(errorHandler);
