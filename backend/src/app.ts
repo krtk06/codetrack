@@ -11,6 +11,7 @@ import topicsRoutes from './modules/topics/topics.routes.js';
 import heatmapRoutes from './modules/heatmap/heatmap.routes.js';
 import contestsRoutes from './modules/contests/contests.routes.js';
 import interviewsRoutes from './modules/interviews/interviews.routes.js';
+import mockInterviewsRoutes from './modules/mock-interviews/mockInterviews.routes.js';
 
 export const app = express();
 
@@ -32,5 +33,6 @@ app.use('/api/topics', topicsRoutes);
 app.use('/api/heatmap', heatmapRoutes);
 app.use('/api/contests', contestsRoutes);
 app.use('/api/interviews', interviewsRoutes);
+app.use('/api/mock-interviews', mockInterviewsRoutes);
 
 app.use(errorHandler);

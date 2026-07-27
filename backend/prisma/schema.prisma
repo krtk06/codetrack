@@ -32,6 +32,7 @@ model User {
   topicPerformances        TopicPerformance[]
   contests                 Contest[]
   interviews               Interview[]
+  mockInterviews            MockInterview[]
 }
 
 model ProblemStats {
@@ -150,6 +151,23 @@ enum InterviewStatus {
   SCHEDULED
   COMPLETED
   CANCELLED
+}
+
+model MockInterview {
+  id          String   @id @default(uuid())
+  userId      String
+  date        DateTime
+  interviewer String
+  topic       String
+  score       Int
+  scoreOutOf  Int      @default(10)
+  feedback    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId, topic])
 }
 
 model RefreshToken {
