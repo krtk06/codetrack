@@ -30,6 +30,15 @@ vi.mock('../features/applications/applicationsApi', () => ({
   deleteApplication: vi.fn()
 }));
 
+vi.mock('../features/recommendations/recommendationsApi', () => ({
+  getRecommendations: vi.fn().mockResolvedValue({
+    weakTopics: [],
+    dailyPlan: [],
+    learningPath: [{ phase: 'Explore', topics: ['Arrays'] }],
+    generatedAt: '2026-01-01T00:00:00.000Z'
+  })
+}));
+
 const mockUser = {
   id: 'u1',
   email: 'alice@example.com',
@@ -118,5 +127,15 @@ describe('Dashboard page', () => {
     expect(screen.getByText('Quick Actions')).toBeInTheDocument();
     expect(screen.getByText('Schedule Interview')).toBeInTheDocument();
     expect(screen.getByText('Add Application')).toBeInTheDocument();
+  });
+
+  it('renders the recommendations card', async () => {
+    vi.mocked(usersApi.getCurrentUser).mockResolvedValue({ user: mockUser as any });
+    vi.mocked(dashboardApi.getDashboard).mockResolvedValue(mockDashboard);
+
+    render(<Dashboard />, { wrapper: Wrapper });
+
+    await waitFor(() => expect(screen.getByText('Recommendations')).toBeInTheDocument());
+    expect(screen.getByText('Explore')).toBeInTheDocument();
   });
 });

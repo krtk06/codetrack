@@ -9,6 +9,7 @@ import StatCard from '../components/dashboard/StatCard';
 import UpcomingInterviews from '../components/dashboard/UpcomingInterviews';
 import RecentApplications from '../components/dashboard/RecentApplications';
 import QuickActions from '../components/dashboard/QuickActions';
+import RecommendationsCard from '../components/recommendations/RecommendationsCard';
 import WeeklyGrowthChart from '../components/charts/WeeklyGrowthChart';
 import MonthlyGrowthChart from '../components/charts/MonthlyGrowthChart';
 
@@ -93,6 +94,8 @@ export default function Dashboard() {
         <RecentApplications />
         <QuickActions />
       </div>
+
+      <RecommendationsCard />
 
       <LeetCodeStatsCard username={user?.leetcodeUsername ?? undefined} />
     </div>
