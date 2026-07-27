@@ -1,4 +1,5 @@
 import TrendChart from '../components/charts/TrendChart';
+import TodaysPlanCard from '../components/recommendations/TodaysPlanCard';
 import { useAnalyticsSummary } from '../features/analytics/useAnalyticsSummary';
 import { useGrowth } from '../features/analytics/useGrowth';
 
@@ -67,32 +68,36 @@ export default function Analytics() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <TrendChart
-          title="Weekly Trend"
-          type="line"
-          labels={weekly.data?.labels ?? []}
-          data={weekly.data?.data ?? []}
-          isLoading={weekly.isLoading}
-          error={weekly.error ?? null}
-        />
-        <TrendChart
-          title="Monthly Trend"
-          type="bar"
-          labels={monthly.data?.labels ?? []}
-          data={monthly.data?.data ?? []}
-          isLoading={monthly.isLoading}
-          error={monthly.error ?? null}
-        />
-        <TrendChart
-          title="Yearly Trend"
-          type="area"
-          labels={yearly.data?.labels ?? []}
-          data={yearly.data?.data ?? []}
-          isLoading={yearly.isLoading}
-          error={yearly.error ?? null}
-        />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <TrendChart
+            title="Weekly Trend"
+            type="line"
+            labels={weekly.data?.labels ?? []}
+            data={weekly.data?.data ?? []}
+            isLoading={weekly.isLoading}
+            error={weekly.error ?? null}
+          />
+          <TrendChart
+            title="Monthly Trend"
+            type="bar"
+            labels={monthly.data?.labels ?? []}
+            data={monthly.data?.data ?? []}
+            isLoading={monthly.isLoading}
+            error={monthly.error ?? null}
+          />
+        </div>
+        <TodaysPlanCard />
       </div>
+
+      <TrendChart
+        title="Yearly Trend"
+        type="area"
+        labels={yearly.data?.labels ?? []}
+        data={yearly.data?.data ?? []}
+        isLoading={yearly.isLoading}
+        error={yearly.error ?? null}
+      />
     </div>
   );
 }
